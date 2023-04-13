@@ -2,6 +2,7 @@
 private class ContactManagerTest {
 
     @isTest 
+    @isTest 
 static void testNewContactWithExistingEmail() {
  Contact existingContact = new Contact(
 Email = 'testemail1@test.com',
@@ -46,30 +47,35 @@ String contactId;
         String contactId = contact.Id;    
         // Test updating contact
         Test.startTest();
+        ContactManager.updatedContact(contactId, 'LastName', 'kal');
         ContactManager.updatedContact(contactId, 'FirstName', 'san');
+
         Test.stopTest();
         // Verify that contact's field is updated
-        Contact updatedContact = [SELECT FirstName FROM Contact WHERE Id = :contactId];
+        Contact updatedContact = [SELECT Id,FirstName,LastName FROM Contact WHERE Id = :contactId];
         System.assertEquals('san', updatedContact.FirstName);
+         System.assertEquals('kal', updatedContact.LastName);
     }
 
     @isTest
     static void testDesactivatedContact() {
-         ContactManager.newContact('testemail1@test.com','san','kal');
-
-        Contact testContact = [SELECT Id,isActivate__c FROM Contact WHERE Email ='testemail1@test.com'];
+  Contact contact = new Contact(FirstName='Test', LastName='User', Email='testemail1@test.com');
+        insert contact;                
+        Contact testContact = [SELECT Id,isActivate__c FROM Contact WHERE Email ='testemail1@test.com' ];
         // Set up the test REST request
         RestRequest request = new RestRequest();
-        request.requestURI = '/services/apexrest/contact/' + testContact.Id;
+        request.requestURI = '/services/apexrest/contact/'+testContact.Id;
         RestContext.request = request;
 
           ContactManager.desactivatedContact();
 
         testContact = [SELECT Id,isActivate__c FROM Contact WHERE Id =:testContact.Id];
-        System.assertEquals(false, testContact.isActivate__c);
+        System.assertEquals(false, contact.isActivate__c);
         
        
     }
 
-   
+    
+    
+  
 }

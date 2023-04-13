@@ -1,5 +1,5 @@
 @isTest
-private class ContractManagerTest {
+private class ContractManagersTest {
     @isTest static void testCreatedContract() {
         // Create test data
         Account testAccount = new Account(Name='Test Account');

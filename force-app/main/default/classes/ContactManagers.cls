@@ -49,21 +49,16 @@ global static void desactivatedContact() {
       RestRequest request = RestContext.request;
         String contactId= request.requestURI.substring(
             request.requestURI.lastIndexOf('/')+1);
-    try{
+  
     Contact contact = [SELECT Id FROM Contact WHERE Id = :contactId];
     if (contact == null) {
         // Si le contact n'existe pas, on renvoie une erreur 404
-        RestContext.response.responseBody = Blob.valueOf('Contact not found.');
+        RestContext.response.responseBody = Blob.valueOf('Contact not found');
         RestContext.response.statusCode = 404;
     } else {
         // Sinon, on désactive le contact
        contact.isActivate__c= false;
-        update contact;
-          RestContext.response.responseBody = Blob.valueOf('Contact ' + contact.Id + ' deactivated.');
-            RestContext.response.statusCode = 200;
+        update contact;  
     }}
-    catch(Exception ex){
-        system.debug(ex.getMessage());
-    }
-}
+    
 }
