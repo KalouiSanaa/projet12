@@ -46,19 +46,16 @@ global static void updatedContact(String contactId, String field, String value) 
  @HttpDelete
 global static void desactivatedContact() {
    
-      RestRequest request = RestContext.request;
-        String contactId= request.requestURI.substring(
+            RestRequest request = RestContext.request;
+        String contactId = request.requestURI.substring(
             request.requestURI.lastIndexOf('/')+1);
-  
-    Contact contact = [SELECT Id FROM Contact WHERE Id = :contactId];
-    if (contact == null) {
-        // Si le contact n'existe pas, on renvoie une erreur 404
-        RestContext.response.responseBody = Blob.valueOf('Contact not found');
-        RestContext.response.statusCode = 404;
-    } else {
-        // Sinon, on désactive le contact
-       contact.isActivate__c= false;
-        update contact;  
-    }}
-    
-}
+        Contact thisContact = [SELECT Id FROM Contact WHERE Id = :contactId];
+        if (thisContact == null) {
+            RestContext.response.responseBody = Blob.valueOf('Contact not found.');
+            RestContext.response.statusCode = 404;
+        } else {
+            thisContact.isActivate__c = false;
+            update thisContact;
+        }}
+    }
+ 

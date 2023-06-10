@@ -15,25 +15,29 @@ global static String createdContract(Id accountId, String name, Date startDate, 
 }
 
 @HttpPatch
-global static void updatedContract(Id accountId,String field, String value,Integer contractTerm) {
-    Contract contract = [SELECT Id,contractTerm, StartDate, EndDate, AccountId,Status FROM Contract WHERE Id = :accountId];
-    if (contract == null) {
+global static void updatedContract(Id accountId, String field, String value, Integer contractTerm) {
+    List<Contract> contracts = [SELECT Id, ContractTerm, StartDate, EndDate, AccountId, Status FROM Contract WHERE Id = :accountId];
+    if (contracts== null) {
         // Si le contrat n'existe pas, on renvoie une erreur 404
         RestContext.response.responseBody = Blob.valueOf('Contract not found.');
         RestContext.response.statusCode = 404;
-    } 
-    else {
-           contract.contractTerm=contractTerm;
+    } else {
+        for(contract contract :contracts){
+        
+        contract.ContractTerm = contractTerm;
 
         if (field == 'Name') {
             contract.Name = value;
         } else if (field == 'StartDate') {
-           contract.StartDate = Date.valueOf(value);
+            contract.StartDate = Date.valueOf(value);
         } else if (field == 'Status') {
-           contract.status=value;
+            contract.Status = value;
         } else if (field == 'AccountId') {
             contract.AccountId = Id.valueOf(value);
-        }
-        update contract;
+        }}
+        update contracts;
     }
-}}
+}
+
+
+}
